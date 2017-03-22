@@ -1,0 +1,163 @@
+---
+# Example configuration for linbuild
+#
+# The file itself is a YAML document, with the top level being a map (the
+# YAML equivalent of a dict).  Each top level item has the following syntax:
+# <key>: <value>
+#
+# String values may be quoted but do not have to be (even if they have
+# spaces).
+#
+# Lists have the following form:
+# <name>:
+#   - <item>
+#   - <item>
+#
+# Just like in Python, indentation in YAML delimits blocks.
+
+# 'verbose' controls whether command output is shown during execution.
+# It defaults to false.
+verbose: false
+
+# srcdir defines the location of the kernel sources
+srcdir: /usr/src/linux
+
+# 'config' specifies the path to a kernel config file to use.  This will
+# automatically be copied into the build directory.  If 'config' is not
+# defined, then linbuild assumes that a .config is already present in the
+# build directory.
+#config: /path/to/config
+
+# If 'splitbuild' is true then the build is done in a separate directory
+# from 'srcdir'.  If it is false (the default if it's not listed), then
+# the build is done in srcdir.
+splitbuild: false
+
+# If 'splitbuild' is true, 'builddir' specifies where the kernel build
+# will occur.  This directory is created if it doesn't exist.
+# This defaults to the current working directory.
+#builddir: /path/to/build
+
+# 'tmpdir' specifies where to put any temporary files.  This is only
+# currently used if you are installing an initramfs.  Defaults to /tmp
+#tmpdir: /tmp
+
+# 'image-type' defines the name of the kernel image.  This is used by
+# both the 'install' and 'outdir' modes to find the kernel image.  A file
+# with this exact name is searched for in arch/*/boot/ when copying the
+# kernel image somewhere.  The default is 'bzImage', which sould work on
+# most systems.  Other possibilities include 'uImage' and 'zImage'.
+#image-type: bzImage
+
+# The 'output' map controls copying of the kernel image and other files
+# out of the build directory ot anothr location after the build.  If this
+# is defined, then you have to specify the 'directory' key as well.
+#output:
+  # 'directory' controls where the kernle image and other files are
+  # copied to.  All the data copied in by linbuilder will be placed in
+  # a sub-directory named after the kernel release.
+  #directory: /path/to/output
+
+  # If 'modules' is true, then the kernel modules will be installed into
+  # 'directory' as well as copying the kernel image.  Defaults to false.
+  #modules: true
+
+  # If 'headers' is true, then the kernel headers will be installed into
+  # 'directory' together with the kernel image.  Defaults to false.
+  #headers: true
+
+  # 'extra' is a list of extra files to copy from the build directory
+  # into the output directory.  These will be placed under 'extra' in the
+  # output directory.  Paths are relative to the build directory.
+  #extra:
+  #  - /file/1
+  #  - /file/2
+
+  # 'clean' determines whether or not to recreatee the output directory
+  # from scratch each time.  Enabling this is recommended if you are
+  # copying headers to the output directory.  Defaults to false.
+  #clean: false
+
+  # 'image-prefix' defines the prefix to be used for the kernel image.  The name
+  # of the kernel image put in the output directory will be constructed
+  # from this and the esult of 'make kernelversion', separated by a '-'.
+  # Defaults to 'kernel'.
+  #image-prefix: kernel
+
+# The 'install' map controls installation of the kernel and other files
+# on the local system.  If this map is present, then linbuild will
+# install the kernel image and (by default) the modules from the build on
+# the local system.
+#install:
+  # 'bootdir' defines where to install the kernel image.  It defaults to /boot
+  #bootdir: /boot
+
+  # If 'symlink' is true, then a symbolic link matching the prefix for
+  # the kernel image will be created in 'bootdir' after the installation.
+  # This allows you to point your bootloader at the symbolic link so you
+  # don't have to regenerate it's configuration whenever you isntall a
+  # new kernel.  Defaults to true.
+  #symlink: true
+
+  # If 'keep-old' is true and a file with the same name as one of the
+  # ones created by linbuild already exists in 'bootdir', a backup will be
+  # created with the extension '.old' prior to the new one being copied in.
+  # This does not operate recursively (so it only keeps the most recent
+  # old copy of a file).  Defaults to true.
+  #keep-old: true
+
+  # If 'modules' is true, then the kernel modules will be installed to
+  # the live system.  Defaults to true if the 'install' map exists.
+  #modules: true
+
+  # 'image-prefix' defines the prefix to be used for the kernel image.
+  # This works just like the 'image-prefix' option in the output map,
+  # including having the same default.
+  #image-prefix: 'kernel'
+
+  # 'initrd-generator' specifies what program to use to generate an
+  # initial ram filesystem or initial ramdisk during the installation.
+  # If unset, no initramfs is generated.  Currently supports dracut
+  # or mkinitramfs.
+  #initrd-generator: dracut
+
+  # 'initrd-opts' specifies any extra options to pass to the tool being
+  # used to generate the initial RAM filesystem.
+  #initrd-opts: --some-option
+
+  # 'initrd-prefix' specifies the prefix to use for the initramfs
+  # or initrd.
+  #initrd-prefix: initramfs
+
+# 'clean' controls whether or not the build directory will be cleaned
+# before the build.  It defaults to false.
+clean: false
+
+# 'postclean' controls whether or not the build directory is cleaned after
+# everything else is done.  This only makes sense if 'install' is true or
+# 'outdir' is set.
+#postclean: false
+
+# If 'postnuke' is true, then 'builddir' will be completely removed
+# instead of just having 'make clean' run in it when 'postclean' is true.
+# For safety reasons, this is only honored if 'splitbuild' is true and
+# 'builddir' is defined.
+#postnuke: false
+
+# 'make' is a map controlling how the 'make' command is run. You only
+# need this section if you want to change one of the items inside it.
+#make:
+  # 'command' specifies the path to the 'make' command.  It defaults to
+  # searching $PATH.
+  #command: /usr/bin/make
+
+  # 'jobs' specifies the number of commands for 'make' to run in
+  # parallel.  It defaults to the number of CPU's in the system (honoring
+  # CPU affinity).  You can set this to 1 to disable parallel execution.
+  #jobs: 1
+
+  # 'opts' is a string of extra options that get passed directly to
+  # 'make'.  This should not include -C or -j, as both are automatically
+  # added by linbuild.  Note that this is not passed when cleaning.
+  #opts: V=2
+...
