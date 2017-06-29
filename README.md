@@ -12,7 +12,7 @@ with some extra configurability, and has evolved from there.
 * Automatically runs the actual build in parallel with a reasonable
   number of CPU's (including properly honoring CPU affinity).
 * Handling of independent build directories, including creation and setup
-  of the build directory, and optionally even deletion afteer copying out
+  of the build directory, and optionally even deletion after copying out
   the parts that you want.
 * Let's the user manage their own config files.  By default, linbuild
   assumes that your build tree already has a config file in it that you
@@ -57,7 +57,7 @@ of the step at the end of the command-line.  The steps are:
   also installing modules.
 * **initramfs**: This builds the initramfs.
 * **cleanup**: This handles cleanup of the build directory and other
-  temoprary directories.
+  temporary directories.
 
 ### License ###
 linbuild is licensed under a 3-clause BSD license.  Check out the LICENSE
