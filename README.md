@@ -10,8 +10,7 @@ with some extra configurability, and has evolved from there.
 
 ### Features ###
 * Automatically runs the actual build in parallel with a reasonable
-  number of CPU's (it uses the number of CPU's it's allowed to run on
-  based on sched\_getaffinity() by default).
+  number of CPU's (including properly honoring CPU affinity).
 * Handling of independent build directories, including creation and setup
   of the build directory, and optionally even deletion afteer copying out
   the parts that you want.
@@ -29,9 +28,7 @@ with some extra configurability, and has evolved from there.
   (requires dracut or initramfs-tools).
 * When installing, has the option to create symlinks to the new kernel
   and initramfs (like Gentoo's genkernel tool can), simplifying boot
-  loader management.
-* Has the option when installing to create backup copies if a previous
-  copy of the same kernel version was already installed.
+  loader configuration management.
 * Supports automatically rebuilding out-of-tree kernel modules that are
   installed with either emerge or DKMS.  This uses `emerge --oneshot
   @module-rebuild` or `dkms autoinstall` respectively, and does not work
@@ -49,12 +46,18 @@ for the config file can be found in `config.yml` in the distribution.
 
 You can run individual steps of the build process by listing the name
 of the step at the end of the command-line.  The steps are:
-* prepare
-* build
-* generate-output
-* install
-* initramfs
-* cleanup
+* **prepare**: Sets up the needed directories and copies in the kernel
+  config.  After running this, you can run make from the build directory
+  to do any thing you normally could from the kernel source directory.
+* **build**: This actually builds the kernel.  It assumes that the build
+  directory is already set up correctly.
+* **generate-output**: This copies the build results to the output
+  directory.
+* **install**: This installs the kernel on the local system, optionally
+  also installing modules.
+* **initramfs**: This builds the initramfs.
+* **cleanup**: This handles cleanup of the build directory and other
+  temoprary directories.
 
 ### License ###
 linbuild is licensed under a 3-clause BSD license.  Check out the LICENSE
