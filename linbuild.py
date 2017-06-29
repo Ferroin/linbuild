@@ -43,6 +43,15 @@ _INITRD_GEN_TYPES = [
     'mkinitramfs'
 ]
 
+_STEPS = {
+    'prepare': prepare,
+    'build': build,
+    'generate-output': gen_output,
+    'install': install,
+    'initramfs': install_initrd,
+    'cleanup': final_cleanup
+}
+
 def get_config(path):
     '''Load the configuration.
 
@@ -373,19 +382,26 @@ def main():
     '''Main program logic.'''
     config = get_config(sys.argv[1])
     logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+    status = 0
     if not config:
         return 2
-    sequence = list()
-    sequence.append(prepare)
-    sequence.append(build)
-    if 'output' in config.keys():
-        sequence.append(gen_output)
-    if 'install'in config.keys():
-        sequence.append(install)
-        if 'initrd-gen' in config['install'].keys():
-            sequence.append(install_initrd)
-    sequence.append(final_cleanup)
-    status = run_sequence(sequence, [config])
+    if len(sys.argv) >= 3:
+        if sys.argv[2] in _steps.keys():
+            status = _steps[sys.argv[2]](config)
+        else:
+            return 2
+    else:
+        sequence = list()
+        sequence.append(prepare)
+        sequence.append(build)
+        if 'output' in config.keys():
+            sequence.append(gen_output)
+        if 'install'in config.keys():
+            sequence.append(install)
+            if 'initrd-gen' in config['install'].keys():
+                sequence.append(install_initrd)
+        sequence.append(final_cleanup)
+        status = run_sequence(sequence, [config])
     if not status:
         return 1
     return 0

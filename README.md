@@ -3,6 +3,11 @@ linbuild is a Python script for automating Linux kernel builds.  It is
 somewhat similar in nature to Gentoo's genkernel, but differs somewhat
 in how it's designed to be used.
 
+linbuild originated when I got tired of the dealing with the limitations
+of the shell script I had been using to do essentially the same thing.
+It started as a simple copy of the script itself rewritten in Python
+with some extra configurability, and has evolved from there.
+
 ### Features ###
 * Automatically runs the actual build in parallel with a reasonable
   number of CPU's (it uses the number of CPU's it's allowed to run on
@@ -22,6 +27,11 @@ in how it's designed to be used.
   system, with the option to save backups of previous versions.
 * Includes the ability to automatically generate and install an initramfs
   (requires dracut or initramfs-tools).
+* When installing, has the option to create symlinks to the new kernel
+  and initramfs (like Gentoo's genkernel tool can), simplifying boot
+  loader management.
+* Has the option when installing to create backup copies if a previous
+  copy of the same kernel version was already installed.
 
 ### Dependencies ###
 * Python >= 3.5
@@ -33,13 +43,26 @@ in how it's designed to be used.
 to linbuild as the only command line argument.  Complete documentation
 for the config file can be found in `config.yml` in the distribution.
 
+You can run individual steps of the build process by listing the name
+of the step at the end of the command-line.  The steps are:
+* prepare
+* build
+* generate-output
+* install
+* initramfs
+* cleanup
+
 ### License ###
 linbuild is licensed under a 3-clause BSD license.  Check out the LICENSE
 file for more info.
 
 ### TODO ###
+* Add support for rebuilding out-of-tree modules when building a new
+  kernel.
 * Add support for using 'kernel-install' instead of doing the install
   ourself.
+* Add the ability to fetch and update the contents of srcdir from a
+  tarball or git tree.
 * Add support for other initramfs generation tools.
 * Add the ability to copy arbitrary extra files (other than .config)
   into the build directory prior to the build (useful for external
