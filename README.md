@@ -32,6 +32,10 @@ with some extra configurability, and has evolved from there.
   loader management.
 * Has the option when installing to create backup copies if a previous
   copy of the same kernel version was already installed.
+* Supports automatically rebuilding out-of-tree kernel modules that are
+  installed with either emerge or DKMS.  This uses `emerge --oneshot
+  @module-rebuild` or `dkms autoinstall` respectively, and does not work
+  with the output directory support.
 
 ### Dependencies ###
 * Python >= 3.5
@@ -57,8 +61,6 @@ linbuild is licensed under a 3-clause BSD license.  Check out the LICENSE
 file for more info.
 
 ### TODO ###
-* Add support for rebuilding out-of-tree modules when building a new
-  kernel.
 * Add support for using 'kernel-install' instead of doing the install
   ourself.
 * Add the ability to fetch and update the contents of srcdir from a
@@ -71,3 +73,5 @@ file for more info.
   directory creation (BTRFS subvolumes, possibly others).
 * Possibly add some extra logic to handle building of kernels with
   integrated initramfs.
+* Make the out-of-tree module support work with the output directory
+  support.

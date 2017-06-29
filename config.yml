@@ -110,6 +110,18 @@ splitbuild: false
   # the live system.  Defaults to true if the 'install' map exists.
   #modules: true
 
+  # If 'emerge-modules' is true, then the emerge command will be called
+  # to rebuild out-of-tree kernel modules that have been installed through
+  # portage.  Defaults to false.  This requires 'modules' to be true,
+  # and it does not work with the output directory support.
+  #emerge-modules: false
+
+  # If 'dkms' is true, then 'dkms autoinstall' will be called to rebuild
+  # DKMS registered out-of-tree modules.  Defaults to false.  This
+  # requires 'modules' to be true, and does not work with the output
+  # directory support.
+  #dkms: false
+
   # 'image-prefix' defines the prefix to be used for the kernel image.
   # This works just like the 'image-prefix' option in the output map,
   # including having the same default.

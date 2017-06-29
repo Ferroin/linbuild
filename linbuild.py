@@ -323,6 +323,15 @@ def install(config):
         except (OSError, IOError):
             pass
         call(command, config['verbose'])
+        if 'emerge-modules' in config['install'].keys() and config['install']['emerge-modules']:
+            logging.info('Re-merging third-party kernel modules.')
+            call('emerge --oneshot --ask n @module-rebuild', config['verbose'])
+        if 'dkms' in config['install'].keys() and config['install']['dkms']:
+            logging.info('Rebuilding third-party modules registered with DKMS.')
+            command = 'dkms'
+            command += ' -j{0}'.format(config['make']['jobs'])
+            command += ' autoinstall'
+            call(command, config['verbose'])
     return True
 
 def install_initrd(config):
